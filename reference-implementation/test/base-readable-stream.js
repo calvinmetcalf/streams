@@ -459,6 +459,7 @@ test('BaseReadableStream cancellation puts the stream in a closed state (no data
     t.fail('wait promise vended after the cancellation should not be rejected');
   });
 });
+
 test('BaseReadableStream cancellation puts the stream in a closed state (after waiting for data)', function (t) {
   var stream = sequentialBaseReadableStream(5);
 
@@ -491,4 +492,45 @@ test('BaseReadableStream cancellation puts the stream in a closed state (after w
       t.fail('wait promise vended after the cancellation should not be rejected');
     });
   }, t.ifError.bind(t));
+});
+
+test('BaseReadableStream returns `true` for the first `push` call; `false` thereafter, if nobody reads', function (t) {
+  t.plan(5);
+
+  var pushes = 0;
+  var stream = new BaseReadableStream({
+    start : function (push) {
+      t.equal(push('hi'), true);
+      t.equal(push('hey'), false);
+      t.equal(push('whee'), false);
+      t.equal(push('yo'), false);
+      t.equal(push('sup'), false);
+    }
+  });
+});
+
+test('BaseReadableStream continues returning `true` from `push` if the data is read out of it', function (t) {
+  t.plan(12);
+
+  var stream = new BaseReadableStream({
+    start : function (push) {
+      // Delay a bit so that the stream is successfully constructed and thus the `stream` variable references something.
+      setTimeout(function () {
+        t.equal(push('hi'), true);
+        t.equal(stream.state, 'readable');
+        t.equal(stream.read(), 'hi');
+        t.equal(stream.state, 'waiting');
+
+        t.equal(push('hey'), true);
+        t.equal(stream.state, 'readable');
+        t.equal(stream.read(), 'hey');
+        t.equal(stream.state, 'waiting');
+
+        t.equal(push('whee'), true);
+        t.equal(stream.state, 'readable');
+        t.equal(stream.read(), 'whee');
+        t.equal(stream.state, 'waiting');
+      }, 0);
+    }
+  });
 });
