@@ -397,7 +397,7 @@ In reaction to calls to the stream's `.write()` method, the `write` constructor 
 ##### write(data)
 
 1. If `this.[[state]]` is `"writable"`,
-    1. Set `this.[[state]]` to `"waiting"`.
+    1. If `this.[[buffer]]` is nonempty, set `this.[[state]]` to `"waiting"`.
     1. Set `this.[[writablePromise]]` to be a newly-created pending promise.
     1. Let `promise` be a newly-created pending promise.
     1. Call `this.[[doNextWrite]]({ type: "data", promise, data })`.

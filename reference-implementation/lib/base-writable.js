@@ -184,7 +184,9 @@ BaseWritableStream.prototype.write = function write(data) {
 
   switch (this._state) {
     case 'writable':
-      this._state = 'waiting';
+      if (this._buffer.length > 0) {
+        this._state = 'waiting';
+      }
       this._writablePromise = new Promise(function (resolve, reject) {
         stream[WRITABLE_RESOLVE] = resolve;
         stream[WRITABLE_REJECT] = reject;
