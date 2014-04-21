@@ -244,6 +244,7 @@ BaseReadableStream.prototype.pipeTo = function pipeTo(dest, options) {
   function cancelSource(reason) { stream.cancel(reason); }
 
   function pumpSource() {
+    console.log('pumpSource: source.state', stream.state);
     switch (stream.state) {
       case 'readable':
         dest.write(stream.read()).catch(cancelSource);
@@ -261,6 +262,7 @@ BaseReadableStream.prototype.pipeTo = function pipeTo(dest, options) {
   }
 
   function fillDest() {
+    console.log('fillDest: dest.state', dest.state);
     switch (dest.state) {
       case 'writable':
         pumpSource();
