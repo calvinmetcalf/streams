@@ -356,3 +356,23 @@ test('WritableStream if sink throws an error before done, the stream becomes err
     );
   }, 0);
 });
+
+test.only('WritableStream if sink throws an error while closing, the stream becomes errored', t => {
+  t.plan(2);
+
+  var thrownError = new Error('throw me');
+  var ws = new WritableStream({
+    close() {
+      throw thrownError;
+    }
+  });
+
+  var closedPromise = ws.close();
+
+  t.equal(ws.state, 'errored', 'state is errored after calling close');
+
+  closedPromise.then(
+    () => t.fail('close promise is fulfilled unexpectedly'),
+    r => t.strictEqual(r, thrownError, 'close promise should be rejected with the thrown error')
+  );
+});

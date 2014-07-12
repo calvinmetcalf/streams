@@ -142,6 +142,7 @@ export default class WritableStream {
     if (this._state === 'closed' || this._state === 'errored') {
       return;
     }
+    console.log('_error, state = ', this._state, new Error().stack);
 
     while (this._queue.length > 0) {
       var writeRecord = helpers.dequeueValue(this._queue);
@@ -254,6 +255,7 @@ export default class WritableStream {
 
     var closePromise = helpers.promiseCall(this._onClose);
 
+    // The problem is that promise-calling means the transition to errored for the thrown case happens on the next tick
     closePromise.then(
       () => {
         this._state = 'closed';

@@ -26,7 +26,12 @@ export default class TransformStream {
         }
       },
       close() {
-        flush(enqueueInOutput, closeOutput);
+        try {
+          flush(enqueueInOutput, closeOutput);
+        } catch (e) {
+          errorOutput(e);
+          throw e;
+        }
       }
     });
   }
