@@ -14,3 +14,5 @@ export default {
   writableStreamHWM: 16 * 1024,
   underlyingSinkConsumptionSpeed: 200
 };
+
+// TODO: pick a variety of scenarios, mixing fast/slow source/sink/transform

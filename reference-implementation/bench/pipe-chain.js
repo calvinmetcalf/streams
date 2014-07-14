@@ -24,6 +24,16 @@ var rs = new ReadableStream({
     strategy: new ByteLengthQueuingStrategy({ highWaterMark: params.readableStreamHWM })
 });
 
+var ts = new TransformStream({
+    transform(chunk, enqueue, done) {
+        var newChunk = new ArrayBuffer(params.underlyingSourceChunkSize * params.transformSizeMultiplier);
+        setTimeout(() => enqueue(newChunk), params.transformSpeed / 2);
+        setTimeout(done, params.transformSpeed);
+    },
+    inputStrategy: new ByteLengthQueuingStrategy({ highWaterMark: params.transformInputHWM }),
+    outputStrategy: new ByteLengthQueuingStrategy({ highWaterMark: params.transformOutputHWM })
+});
+
 var ws = new WritableStream({
     write(chunk, done) {
         console.log('chunk', chunk.byteLength);
@@ -33,7 +43,8 @@ var ws = new WritableStream({
     strategy: new ByteLengthQueuingStrategy({ highWaterMark: params.writableStreamHWM })
 });
 
+// FIXME: use real benchmarking techniques
 var start = Date.now();
-rs.pipeTo(ws).closed.then(() => {
+rs.pipeThrough(ts).pipeTo(ws).closed.then(() => {
     console.log('all data piped', Date.now() - start);
 });
