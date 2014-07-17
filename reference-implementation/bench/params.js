@@ -26,6 +26,8 @@ export var names = {
   underlyingSinkRate: 'Underlying Sink Consumption Rate'
 };
 
+// TODO: need to figure out realistic possibilities. This takes too long.
+// Either do a in-development subset, or make the rates faster, or reduce the possibilities.
 export var possibilities = {
   underlyingSourceChunks: [8, 32],
   underlyingSourceRate: [0, 5, 20],
@@ -53,6 +55,4 @@ function bytes(value) {
   return byteSize(value, 3);
 }
 
-// TODO: pick a variety of scenarios, mixing fast/slow source/sink/transform
 // TODO: allow sync/async consumption
-// TODO: systematically varying? How many combos would that be?
