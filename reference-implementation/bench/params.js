@@ -1,18 +1,58 @@
-export default {
-//  totalSize: 16 * 1024 * 1024 * 1024,
-  totalSize: 16 * 1024,
+var byteSize = require('byte-size');
 
-  underlyingSourceRate: 300,
-  underlyingSourceChunkSize: 1024,
-  readableStreamHWM: 16 * 1024,
-
-  transformSpeed: 100,
-  transformSizeMultiplier: 1,
-  transformInputHWM: 16 * 1024,
-  transformOutputHWM: 16 * 1024,
-
-  writableStreamHWM: 16 * 1024,
-  underlyingSinkConsumptionSpeed: 200
+export var formatters = {
+  underlyingSourceChunks: x => x,
+  underlyingSourceChunkSize: bytes,
+  underlyingSourceRate: rates,
+  readableStreamHWM: bytes,
+  transformRate: rates,
+  transformSizeMultiplier: times,
+  transformInputHWM: bytes,
+  transformOutputHWM: bytes,
+  writableStreamHWM: bytes,
+  underlyingSinkRate: rates
 };
 
+export var names = {
+  underlyingSourceChunks: 'Underlying Source Chunks Produced',
+  underlyingSourceChunkSize: 'Underlying Source Chunk Size',
+  underlyingSourceRate: 'Underlying Source Production Rate',
+  readableStreamHWM: 'Readable Stream HWM',
+  transformRate: 'Transformation Rate',
+  transformSizeMultiplier: 'Transformation Size Multiplier',
+  transformInputHWM: 'Transform Stream Input HWM',
+  transformOutputHWM: 'Transform Stream Output HWM',
+  writableStreamHWM: 'Writable Stream HWM',
+  underlyingSinkRate: 'Underlying Sink Consumption Rate'
+};
+
+export var possibilities = {
+  underlyingSourceChunks: [8, 32],
+  underlyingSourceRate: [0, 5, 20],
+  underlyingSourceChunkSize: [128, 512, 1024, 2 * 1024],
+  readableStreamHWM: [0, 1024, 16 * 1024],
+  transformRate: [0, 5, 20],
+  transformSizeMultiplier: [0.1, 0.5, 1, 1.5, 2, 5],
+  transformInputHWM: [0, 1024, 16 * 1024],
+  transformOutputHWM: [0, 1024, 16 * 1024],
+  writableStreamHWM: [0, 1024, 16 * 1024],
+  underlyingSinkRate: [0, 5, 20]
+};
+
+export var keys = Object.keys(formatters);
+
+function rates(value) {
+  return `1/${value} ms`;
+}
+
+function times(value) {
+  return value + 'x';
+}
+
+function bytes(value) {
+  return byteSize(value, 3);
+}
+
 // TODO: pick a variety of scenarios, mixing fast/slow source/sink/transform
+// TODO: allow sync/async consumption
+// TODO: systematically varying? How many combos would that be?
