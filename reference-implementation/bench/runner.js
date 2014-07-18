@@ -6,7 +6,8 @@ import scenario from './pipe-chain';
 
 var MAX_COMBOS = 1000; // TODO: set to Infinity once things are fast enough
 
-var combinationsIterator = sandwich(...params.keys.map(k => params.possibilities[k]));
+var possibilities = params.quickTestPossibilities;
+var combinationsIterator = sandwich(...params.keys.map(k => possibilities[k]));
 
 if (combinationsIterator.possibilities > MAX_COMBOS) {
   console.log(`Preparing to run ${MAX_COMBOS} tests, out of ${combinationsIterator.possibilities} possible`);

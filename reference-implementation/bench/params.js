@@ -28,8 +28,8 @@ export var names = {
 
 // TODO: need to figure out realistic possibilities. This takes too long.
 // Either do a in-development subset, or make the rates faster, or reduce the possibilities.
-export var possibilities = {
-  underlyingSourceChunks: [8, 32],
+export var exhaustivePossibilities = {
+  underlyingSourceChunks: [1, 8, 32],
   underlyingSourceRate: [0, 5, 20],
   underlyingSourceChunkSize: [128, 512, 1024, 2 * 1024],
   readableStreamHWM: [0, 1024, 16 * 1024],
@@ -39,6 +39,19 @@ export var possibilities = {
   transformOutputHWM: [0, 1024, 16 * 1024],
   writableStreamHWM: [0, 1024, 16 * 1024],
   underlyingSinkRate: [0, 5, 20]
+};
+
+export var quickTestPossibilities = {
+  underlyingSourceChunks: [1, 32],
+  underlyingSourceRate: [0, 10],
+  underlyingSourceChunkSize: [128, 2 * 1024],
+  readableStreamHWM: [0, 8 * 1024],
+  transformRate: [0, 10],
+  transformSizeMultiplier: [0.1, 1, 5],
+  transformInputHWM: [0, 8 * 1024],
+  transformOutputHWM: [0, 8 * 1024],
+  writableStreamHWM: [0, 8 * 1024],
+  underlyingSinkRate: [0, 10]
 };
 
 export var keys = Object.keys(formatters);
