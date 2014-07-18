@@ -1,4 +1,5 @@
 var sandwich = require('sandwich');
+var util = require('util');
 
 module params from './params';
 import scenario from './pipe-chain';
@@ -24,9 +25,9 @@ function doNextCombo() {
   var comboParams = comboParamsFromComboValues(comboValues);
 
   var start = process.hrtime();
-  scenario(comboParams).then(() => {
+  scenario(comboParams).then(results => {
     var milliseconds = msSinceHrtime(start);
-    console.log(`${JSON.stringify(comboValues)}: ${milliseconds} ms`);
+    console.log(`${JSON.stringify(comboValues)}: ${milliseconds} ms, ${util.format(results)}`);
 
     if (++currentComboIndex < MAX_COMBOS) {
       doNextCombo();
