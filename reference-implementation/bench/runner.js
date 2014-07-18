@@ -1,21 +1,19 @@
 var sandwich = require('sandwich');
 var util = require('util');
+var ms = require('ms');
 
 module params from './params';
 import scenario from './pipe-chain';
 
-var MAX_COMBOS = 2000; // TODO: set to Infinity once things are fast enough
-
 var possibilities = params.quickTestPossibilities;
 var combinationsIterator = sandwich(...params.keys.map(k => possibilities[k]));
 
-if (combinationsIterator.possibilities > MAX_COMBOS) {
-  console.log(`Preparing to run ${MAX_COMBOS} tests, out of ${combinationsIterator.possibilities} possible`);
-} else {
-  console.log(`Preparing to run ${combinationsIterator.possibilities} tests`);
-}
+console.log(`About to run ${combinationsIterator.possibilities} tests`);
 
-doNextCombo().catch(console.error);
+var start = Date.now();
+doNextCombo()
+  .then(() => console.log(`Total time elapsed: ${ms(Date.now() - start)}`))
+  .catch(console.error);
 
 var currentComboIndex = 0;
 function doNextCombo() {
@@ -30,9 +28,7 @@ function doNextCombo() {
     var milliseconds = msSinceHrtime(start);
     console.log(`${JSON.stringify(comboValues)}: ${milliseconds} ms, ${util.format(results)}`);
 
-    if (++currentComboIndex < MAX_COMBOS) {
-      return doNextCombo();
-    }
+    return doNextCombo();
   });
 }
 

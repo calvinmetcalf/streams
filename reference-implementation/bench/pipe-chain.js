@@ -8,11 +8,10 @@ export default params => {
   var paused = false;
   var pauses = 0;
 
+  var generateData;
   var rs = new ReadableStream({
     start(enqueue, close) {
-      potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
-
-      function generateData() {
+      generateData = () => {
         if (paused) {
           return;
         }
@@ -29,11 +28,14 @@ export default params => {
         }
 
         potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
-      }
+      };
+
+      potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
     },
 
     pull(enqueue, close) {
       paused = false;
+      potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
     },
 
     strategy: new ByteLengthQueuingStrategy({ highWaterMark: params.readableStreamHWM })
