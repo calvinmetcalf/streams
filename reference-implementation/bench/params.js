@@ -30,8 +30,8 @@ export var names = {
 // Either do a in-development subset, or make the rates faster, or reduce the possibilities.
 export var exhaustivePossibilities = {
   underlyingSourceChunks: [1, 8, 32],
-  underlyingSourceRate: [0, 5, 20],
   underlyingSourceChunkSize: [128, 512, 1024, 2 * 1024],
+  underlyingSourceRate: [0, 5, 20],
   readableStreamHWM: [0, 1024, 16 * 1024],
   transformRate: [0, 5, 20],
   transformSizeMultiplier: [0.1, 0.5, 1, 1.5, 2, 5],
@@ -43,15 +43,15 @@ export var exhaustivePossibilities = {
 
 export var quickTestPossibilities = {
   underlyingSourceChunks: [1, 32],
-  underlyingSourceRate: [0, 10],
-  underlyingSourceChunkSize: [128, 2 * 1024],
+  underlyingSourceChunkSize: [1024],
+  underlyingSourceRate: [0, 15, 30],
   readableStreamHWM: [0, 8 * 1024],
-  transformRate: [0, 10],
-  transformSizeMultiplier: [0.1, 1, 5],
-  transformInputHWM: [0, 8 * 1024],
-  transformOutputHWM: [0, 8 * 1024],
+  transformRate: [0, 15, 30],
+  transformSizeMultiplier: [0.3, 2],
+  transformInputHWM: [0],
+  transformOutputHWM: [0],
   writableStreamHWM: [0, 8 * 1024],
-  underlyingSinkRate: [0, 10]
+  underlyingSinkRate: [0, 15, 30]
 };
 
 export var keys = Object.keys(formatters);
