@@ -10,13 +10,14 @@ export default params => {
 
   var rs = new ReadableStream({
     start(enqueue, close) {
-      var interval = setInterval(() => {
+      potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
+
+      function generateData() {
         if (paused) {
           return;
         }
 
         if (chunksSoFar++ >= params.underlyingSourceChunks) {
-          clearInterval(interval);
           close();
           return;
         }
@@ -26,7 +27,9 @@ export default params => {
           paused = true;
           ++pauses;
         }
-      }, params.underlyingSourceRate);
+
+        potentiallySyncSetTimeout(generateData, params.underlyingSourceRate);
+      }
     },
 
     pull(enqueue, close) {
@@ -39,8 +42,8 @@ export default params => {
   var ts = new TransformStream({
     transform(chunk, enqueue, done) {
       var newChunk = new ArrayBuffer(params.underlyingSourceChunkSize * params.transformSizeMultiplier);
-      setTimeout(() => enqueue(newChunk), params.transformRate / 2);
-      setTimeout(done, params.transformRate);
+      potentiallySyncSetTimeout(() => enqueue(newChunk), params.transformRate / 2);
+      potentiallySyncSetTimeout(done, params.transformRate);
     },
     inputStrategy: new ByteLengthQueuingStrategy({ highWaterMark: params.transformInputHWM }),
     outputStrategy: new ByteLengthQueuingStrategy({ highWaterMark: params.transformOutputHWM })
@@ -48,7 +51,7 @@ export default params => {
 
   var ws = new WritableStream({
     write(chunk, done) {
-      setTimeout(done, params.underlyingSinkRate);
+      potentiallySyncSetTimeout(done, params.underlyingSinkRate);
     },
 
     strategy: new ByteLengthQueuingStrategy({ highWaterMark: params.writableStreamHWM })
@@ -56,3 +59,11 @@ export default params => {
 
   return rs.pipeThrough(ts).pipeTo(ws).closed.then(() => ({ pauses }));
 };
+
+function potentiallySyncSetTimeout(fn, ms) {
+  if (ms === 'sync') {
+    fn();
+  } else {
+    setTimeout(fn, ms);
+  }
+}

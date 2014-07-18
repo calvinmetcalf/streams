@@ -4,7 +4,7 @@ var util = require('util');
 module params from './params';
 import scenario from './pipe-chain';
 
-var MAX_COMBOS = 1000; // TODO: set to Infinity once things are fast enough
+var MAX_COMBOS = 2000; // TODO: set to Infinity once things are fast enough
 
 var possibilities = params.quickTestPossibilities;
 var combinationsIterator = sandwich(...params.keys.map(k => possibilities[k]));
@@ -15,7 +15,7 @@ if (combinationsIterator.possibilities > MAX_COMBOS) {
   console.log(`Preparing to run ${combinationsIterator.possibilities} tests`);
 }
 
-doNextCombo();
+doNextCombo().catch(console.error);
 
 var currentComboIndex = 0;
 function doNextCombo() {
@@ -26,15 +26,14 @@ function doNextCombo() {
   var comboParams = comboParamsFromComboValues(comboValues);
 
   var start = process.hrtime();
-  scenario(comboParams).then(results => {
+  return scenario(comboParams).then(results => {
     var milliseconds = msSinceHrtime(start);
     console.log(`${JSON.stringify(comboValues)}: ${milliseconds} ms, ${util.format(results)}`);
 
     if (++currentComboIndex < MAX_COMBOS) {
-      doNextCombo();
+      return doNextCombo();
     }
-  })
-  .catch(console.error);
+  });
 }
 
 function comboParamsFromComboValues(comboValues) {

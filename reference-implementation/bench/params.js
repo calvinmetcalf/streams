@@ -44,14 +44,14 @@ export var exhaustivePossibilities = {
 export var quickTestPossibilities = {
   underlyingSourceChunks: [1, 32],
   underlyingSourceChunkSize: [1024],
-  underlyingSourceRate: [0, 15, 30],
+  underlyingSourceRate: ['sync', 0, 15, 30],
   readableStreamHWM: [0, 8 * 1024],
-  transformRate: [0, 15, 30],
+  transformRate: ['sync', 0, 15, 30],
   transformSizeMultiplier: [0.3, 2],
   transformInputHWM: [0],
   transformOutputHWM: [0],
   writableStreamHWM: [0, 8 * 1024],
-  underlyingSinkRate: [0, 15, 30]
+  underlyingSinkRate: ['sync', 0, 15, 30]
 };
 
 export var keys = Object.keys(formatters);
